@@ -57,6 +57,20 @@ class Perceptron(Classifier):
             Print logging messages with validation accuracy if verbose is True.
         """
         
+
+	#for each row, sum all input variables times weight
+	error = list()
+	index = 0
+	for bild in self.trainingSet:
+		classifiedAsSeven = self.fire(bild)
+		if (self.trainingSet.label[index] == 1.0) == classifiedAsSeven:
+			error.append(0.0)
+		else:
+			error.append(1.0)
+		
+		index += 1
+	self.updateWeights(self.weight, error)
+
         # Write your code to train the perceptron here
         pass
 
@@ -73,6 +87,8 @@ class Perceptron(Classifier):
             True if the testInstance is recognized as a 7, False otherwise.
         """
         # Write your code to do the classification on an input image
+	return not self.fire(testInstance)	
+
         pass
 
     def evaluate(self, test=None):
@@ -96,6 +112,14 @@ class Perceptron(Classifier):
 
     def updateWeights(self, input, error):
         # Write your code to update the weights of the perceptron here
+	#print(error)
+	bildindex = 0
+	for bild in self.trainingSet:
+		pixelindex = 0	
+		for pixel in bild:
+			input[pixelindex] += self.learningRate * error[bildindex] * bild[pixelindex]
+			pixelindex += 1
+		bildindex += 1
         pass
          
     def fire(self, input):
