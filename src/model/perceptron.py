@@ -46,7 +46,7 @@ class Perceptron(Classifier):
 
         # Initialize the weight vector with small random values
         # around 0 and0.1
-        self.weight = np.random.rand(self.trainingSet.input.shape[1])/100
+	self.weight = np.random.rand(self.trainingSet.input.shape[1])/100
 
     def train(self, verbose=True):
         """Train the perceptron with the perceptron learning algorithm.
@@ -56,23 +56,32 @@ class Perceptron(Classifier):
         verbose : boolean
             Print logging messages with validation accuracy if verbose is True.
         """
-        
-
-	#for each row, sum all input variables times weight
-	error = list()
-	index = 0
-	for bild in self.trainingSet:
-		classifiedAsSeven = self.fire(bild)
-		if (self.trainingSet.label[index] == 1.0) == classifiedAsSeven:
-			error.append(0.0)
-		else:
-			error.append(1.0)
-		
-		index += 1
-	self.updateWeights(self.weight, error)
 
         # Write your code to train the perceptron here
+
+	index = 0;
+	for picture in self.trainingSet:
+		#training the different pictures in the dataset
+		#first classifie them
+		if self.classify(picture):
+			#classified as 7
+	
+			if self.trainingSet.label[index]  == 0:
+				#but it is not a 7
+				#error = prediction - expected = 1 - 0
+				self.updateWeights(picture, 1)
+
+		else:
+			if self.trainingSet.label[index]  == 1:
+				#but it is a 7
+				#error = prediction - expected = 0 - 1
+				self.updateWeights(picture, -1)
+
+		index += 1
+		
+
         pass
+
 
     def classify(self, testInstance):
         """Classify a single instance.
@@ -87,7 +96,15 @@ class Perceptron(Classifier):
             True if the testInstance is recognized as a 7, False otherwise.
         """
         # Write your code to do the classification on an input image
-	return not self.fire(testInstance)	
+	
+	#add the bias w0 to the sum
+	ret = 1.0;
+	index = 0;	
+	for value in testInstance:
+		ret += value *	self.weight[index]
+		index += 1
+
+	return ret > 0.0
 
         pass
 
@@ -112,16 +129,27 @@ class Perceptron(Classifier):
 
     def updateWeights(self, input, error):
         # Write your code to update the weights of the perceptron here
-	#print(error)
-	bildindex = 0
-	for bild in self.trainingSet:
-		pixelindex = 0	
-		for pixel in bild:
-			input[pixelindex] += self.learningRate * error[bildindex] * bild[pixelindex]
-			pixelindex += 1
-		bildindex += 1
+
+	index=0
+	while index < len(self.weight):
+		#update every weight for every input
+		self.weight[index] = self.weight[index]- self.learningRate * error * input[index]
+		index += 1
+	
         pass
          
     def fire(self, input):
         """Fire the output of the perceptron corresponding to the input """
-        return Activation.sign(np.dot(np.array(input), self.weight))
+	return Activation.sign(np.dot(np.array(input), self.weight))
+
+
+
+
+
+
+
+
+
+
+
+
