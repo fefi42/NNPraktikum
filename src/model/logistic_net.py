@@ -7,13 +7,14 @@ import numpy as np
 
 from util.activation_functions import Activation
 from model.classifier import Classifier
+from model.logistic_layer import LogisticLayer
 
 logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',
                     level=logging.DEBUG,
                     stream=sys.stdout)
 
 
-class LogisticRegression(Classifier):
+class LogisticNet(Classifier):
     """
     A digit-7 recognizer based on logistic regression algorithm
 
@@ -44,8 +45,8 @@ class LogisticRegression(Classifier):
         self.validationSet = valid
         self.testSet = test
 
-        # Initialize the weight vector with small values
-        self.weight = 0.01*np.random.randn(self.trainingSet.input.shape[1])
+        #todo generate multiple layers dependend on given parameters
+        self.net = LogisticLayer(self.trainingSet.input.shape[1], 1)
 
     def train(self, verbose=True):
         """Train the Logistic Regression.
@@ -56,29 +57,30 @@ class LogisticRegression(Classifier):
             Print logging messages with validation accuracy if verbose is True.
         """
 
-
-
-        from util.loss_functions import DifferentError
-        loss = DifferentError()
-
         learned = False
         iteration = 0
 
         while not learned:
-            grad = 0
+
             totalError = 0
             for input, label in zip(self.trainingSet.input,
                                     self.trainingSet.label):
+
                 output = self.fire(input)
-                # compute gradient
-                grad += -(label - output)*input
+
+                #print (output, label)
+
+                #only for the last layer
+                self.net.computeDerivative([], [], label)
+
+                self.net.updateWeights(self.learningRate)
+
 
                 # compute recognizing error, not BCE
                 predictedLabel = self.classify(input)
-                error = loss.calculateError(label, predictedLabel)
+                error = label - predictedLabel
                 totalError += error
 
-            self.updateWeights(grad)
             totalError = abs(totalError)
             
             iteration += 1
@@ -124,8 +126,5 @@ class LogisticRegression(Classifier):
         # set.
         return list(map(self.classify, test))
 
-    def updateWeights(self, grad):
-        self.weight -= self.learningRate*grad
-
     def fire(self, input):
-        return Activation.sigmoid(np.dot(np.array(input), self.weight))
+        return self.net.forward(input)

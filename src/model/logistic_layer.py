@@ -4,10 +4,10 @@ import time
 import numpy as np
 
 from util.activation_functions import Activation
-from model.layer import Layer
+from util.loss_functions import BinaryCrossEntropyError
 
 
-class LogisticLayer(Layer):
+class LogisticLayer():
     """
     A layer of perceptrons acting as the output layer
 
@@ -41,7 +41,7 @@ class LogisticLayer(Layer):
     """
 
     def __init__(self, nIn, nOut, weights=None,
-                 activation='softmax', isClassifierLayer=True):
+                 activation='sigmoid', isClassifierLayer=True):
 
         # Get activation function from string
         # Notice the functional programming paradigms of Python + Numpy
@@ -84,9 +84,16 @@ class LogisticLayer(Layer):
         ndarray :
             a numpy array (1,nOut) containing the output of the layer
         """
-        pass
 
-    def computeDerivative(self, nextDerivatives, nextWeights):
+        #append bias for input
+        self.input = np.append(input, [1])
+
+        weightedinput = np.dot(self.weights, np.transpose(self.input))
+        self.output =  Activation.sigmoid(weightedinput)
+
+        return self.output
+
+    def computeDerivative(self, nextDerivatives, nextWeights, label):
         """
         Compute the derivatives (back)
 
@@ -101,11 +108,37 @@ class LogisticLayer(Layer):
         -------
         ndarray :
             a numpy array containing the partial derivatives on this layer
-        """
-        pass
 
-    def updateWeights(self):
+        This is backpropagation
+        """
+
+
+        if self.isClassifierLayer == True:
+
+            error = (label - self.output)
+        else:
+            error = nextDerivatives*nextWeights
+
+
+        self.delta = Activation.sigmoidPrime(self.output) * error
+        return self.delta # there should be one value in this vector
+
+
+
+    def updateWeights(self, learningRate=0.1):
         """
         Update the weights of the layer
         """
-        pass
+
+        if self.isClassifierLayer == True:
+
+
+            self.weights = self.weights + (learningRate * self.delta * self.input)
+
+        else:
+            self.weights = self.weights + learningRate * self.delta * self.input
+
+
+        return self.weights
+
+
