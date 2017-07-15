@@ -5,6 +5,7 @@ import numpy as np
 
 from util.activation_functions import Activation
 from util.loss_functions import BinaryCrossEntropyError
+from util.loss_functions import DifferentError
 
 
 class LogisticLayer():
@@ -114,10 +115,14 @@ class LogisticLayer():
 
 
         if self.isClassifierLayer == True:
+            de = DifferentError()
+            bce = BinaryCrossEntropyError()
 
-            error = (label - self.output)
+            #error = bce.calculateError(label, self.output)
+
+            error = de.calculateError(label, self.output)
         else:
-            error = nextDerivatives*nextWeights
+            error = np.dot(nextDerivatives, nextWeights)
 
 
         self.delta = Activation.sigmoidPrime(self.output) * error
