@@ -8,12 +8,12 @@ from model.logistic_regression import LogisticRegression
 from model.mlp import MultilayerPerceptron
 
 from report.evaluator import Evaluator
-from report.performance_plot import PerformancePlot
+#from report.performance_plot import PerformancePlot
 
 
 def main():
     data = MNISTSeven("../data/mnist_seven.csv", 3000, 1000, 1000,
-                                                    oneHot=False)
+                                                    oneHot=True)
     # myStupidClassifier = StupidRecognizer(data.trainingSet,
     #                                       data.validationSet,
     #                                       data.testSet)
@@ -33,8 +33,8 @@ def main():
     myMLPClassifier = MultilayerPerceptron(data.trainingSet,
                                         data.validationSet,
                                         data.testSet,
-                                        learningRate=0.005,
-                                        epochs=30)
+                                        learningRate=0.0005,
+                                        epochs=1)
                                         
     
     # Report the result #
@@ -89,9 +89,9 @@ def main():
     evaluator.printAccuracy(data.testSet, mlpPred)
     
     # Draw
-    plot = PerformancePlot("MLP validation")
-    plot.draw_performance_epoch(mlpPred.performances,
-                                mlpPred.epochs)
+#    plot = PerformancePlot("MLP validation")
+#    plot.draw_performance_epoch(mlpPred.performances,
+#                                mlpPred.epochs)
     
     
 if __name__ == '__main__':

@@ -67,11 +67,12 @@ class Activation:
     def softmax(netOutput):
         # Here you have to code the softmax function
         #Annahme netOutput ist ein Array mit den Werten
-        e = np.exp(netOutput)
-        if(np.isnan(e[0])):
-            a = 1
 
-        res = e / np.sum(e)
+        e = np.exp(netOutput)
+
+        s = np.sum(e)
+
+        res = e / s
 
         return res
         
