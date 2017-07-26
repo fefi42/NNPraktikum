@@ -68,12 +68,17 @@ class Activation:
         # Here you have to code the softmax function
         #Annahme netOutput ist ein Array mit den Werten
         e = np.exp(netOutput)
-        if(np.isnan(e[0])):
-            a = 1
+        eSum = np.sum(e)
 
-        res = e / np.sum(e)
+        # In theory e-function values can't reach 0. But as float representation is limited to a certain number range it will get zero in practice.
+        # So if all of the entries in netOutput become zero the sum will also be zero and will result in a divide by zero, which then results in NaN for all entries.
+        # Therefor this case needs to be checked
+        if (eSum == 0):
+            # this means an equal distribution:
+            return np.ones(np.shape(e)) / len(e)
 
-        return res
+        return e / eSum
+
         
     @staticmethod
     def softmaxPrime(netOutput):
