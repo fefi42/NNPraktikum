@@ -183,15 +183,15 @@ class MultilayerPerceptron(Classifier):
                 errorVector = self._compute_error(sampleLabelVector, output)
                 self._update_weights(self.learningRate,errorVector)
 
-        if verbose:
-            accuracy = accuracy_score(self.validationSet.label,
-                                      self.evaluate(self.validationSet))
-            # Record the performance of each epoch for later usages
-            # e.g. plotting, reporting..
-            self.performances.append(accuracy)
-            print("Accuracy on validation: {0:.2f}%"
-                  .format(accuracy * 100))
-            print("-----------------------------")  
+            if verbose:
+                accuracy = accuracy_score(self.validationSet.label,
+                                          self.evaluate(self.validationSet))
+                # Record the performance of each epoch for later usages
+                # e.g. plotting, reporting..
+                self.performances.append(accuracy)
+                print("Accuracy on validation: {0:.2f}%"
+                      .format(accuracy * 100))
+                print("-----------------------------")
 
     def classify(self, test_instance):
         # Classify an instance given the model of the classifier

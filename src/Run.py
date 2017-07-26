@@ -90,8 +90,9 @@ def main():
     
     # Draw
     plot = PerformancePlot("MLP validation")
-    plot.draw_performance_epoch(mlpPred.performances,
-                                mlpPred.epochs)
+
+    plot.draw_performance_epoch(myMLPClassifier.performances,
+                                myMLPClassifier.epochs)
     
     
 if __name__ == '__main__':
