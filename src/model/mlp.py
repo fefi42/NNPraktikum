@@ -80,17 +80,18 @@ class MultilayerPerceptron(Classifier):
         self.layers.append(LogisticLayer(train.input.shape[1], 128,
                            None, inputActivation, False))
 
-        #prevSize = 128
+        prevSize = 128
         #nextSize = 128
-        # for i in (1:2):
-        #     nextSize = prevSize-10
-        #     self.layers.append(LogisticLayer(prevSize, nextSize, 
-        #                    None, inputActivation, False)) # CHECK INPUT PARAMETERS
-        #     prevSize = nextSize
+        #for i in range(1, 2):
+        #    break
+        #    nextSize = prevSize-10
+        #    self.layers.append(LogisticLayer(prevSize-1, nextSize,
+        #                   None, inputActivation, False)) # CHECK INPUT PARAMETERS
+        #    prevSize = nextSize
 
         # Output layer
         outputActivation = "softmax"
-        self.layers.append(LogisticLayer(128-1, 10, 
+        self.layers.append(LogisticLayer(prevSize-1, 10,
                            None, outputActivation, True))
 
         self.inputWeights = inputWeights # USELESS?!
