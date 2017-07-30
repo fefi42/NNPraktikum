@@ -6,6 +6,7 @@ from model.stupid_recognizer import StupidRecognizer
 from model.perceptron import Perceptron
 from model.logistic_regression import LogisticRegression
 from model.mlp import MultilayerPerceptron
+import numpy as np
 
 from report.evaluator import Evaluator
 from report.performance_plot import PerformancePlot
@@ -33,8 +34,8 @@ def main():
     myMLPClassifier = MultilayerPerceptron(data.trainingSet,
                                         data.validationSet,
                                         data.testSet,
-                                        learningRate=0.005,
-                                        epochs=30)
+                                        learningRate=0.0001,
+                                        epochs=10)
                                         
     
     # Report the result #
@@ -91,8 +92,7 @@ def main():
     # Draw
     plot = PerformancePlot("MLP validation")
 
-    plot.draw_performance_epoch(myMLPClassifier.performances,
-                                myMLPClassifier.epochs)
+    plot.draw_performance_epoch(myMLPClassifier.performances, myMLPClassifier.epochs)
     
     
 if __name__ == '__main__':

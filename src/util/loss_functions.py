@@ -122,8 +122,16 @@ class CrossEntropyError(Error):
         self.errorString = 'crossentropy'
 
     def calculateError(self, target, output):
-        res = -(target*np.log(output) + (1-target)*np.log(1-output))
+        # epsillon added for numerical stability
+        e = 1e-100
+        res = -(target*np.log(output+e) + (1-target)*np.log(1-output+e))
         return res
         
     def calculateDerivative(self, target, output):
-        return (-target/output + (1-target)/(1-output))
+        # epsillon added for numerical stability
+        e = 1e-100
+        return (-target/(output+e) + (1-target)/(1-output+e))
+
+        # Next line would approximate a derivative numerically
+        # e = 1e-5
+        #return (self.calculateError(target, output+e) + self.calculateError(target, output)) / e
