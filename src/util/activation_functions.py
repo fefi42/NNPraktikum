@@ -67,24 +67,38 @@ class Activation:
     def softmax(netOutput):
         # Here you have to code the softmax function
         #Annahme netOutput ist ein Array mit den Werten
-        e = np.exp(netOutput)
-        eSum = np.sum(e)
+        #e = np.exp(netOutput)
+        #eSum = np.sum(e)
 
-        # In theory e-function values can't reach 0. But as float representation is limited to a certain number range it will get zero in practice.
-        # So if all of the entries in netOutput become zero the sum will also be zero and will result in a divide by zero, which then results in NaN for all entries.
-        # Therefor this case needs to be checked
-        if (eSum == 0):
-            # this means an equal distribution:
-            return np.ones(np.shape(e)) / len(e)
-
-        return e / eSum
+        # The values are shifted by the max to get a better numerical stability
+        shift = netOutput - np.max(netOutput)
+        e = np.exp(shift)
+        return e / np.sum(e)
 
         
     @staticmethod
     def softmaxPrime(netOutput):
+
         # Here you have to code the softmax function
-        phi= Activation.softmax(netOutput)
-        return (phi * (1-phi))
+        phi = Activation.softmax(netOutput)
+        return phi * (1 - phi)
+
+        # Tried to derive the jacoby matrix but didn't work out
+        '''
+        jacobyMatrix = np.zeros([len(netOutput), len(netOutput)])
+        phi = Activation.softmax(netOutput)
+
+        for i in range(0,len(netOutput)):
+            for j in range(0, len(netOutput)):
+                kroneckerDelta = 1 if (i == j) else 0
+                jacobyMatrix[i, j] = phi[i] * (kroneckerDelta - phi[j])
+
+        #res = np.dot(phi, jacobyMatrix)
+        res = np.sum(jacobyMatrix, axis=1)
+        #print(res)
+
+        return res
+        '''
         
     @staticmethod
     def getActivation(str):
