@@ -137,8 +137,7 @@ class MultilayerPerceptron(Classifier):
             a numpy array (1,nOut) containing the error
         """
 
-        errorVector = self.loss.calculateError(target, output)
-        
+        errorVector = self.loss.calculateDerivative(target, output)
         return errorVector
 
     
@@ -146,9 +145,10 @@ class MultilayerPerceptron(Classifier):
         """
         Update the weights of the layers by propagating back the error
         """
-        errorVector = errorVector
+
         outputLayer = self._get_output_layer()
-        outputLayer.computeDerivative(errorVector, np.ones(outputLayer.nOut))
+
+        outputLayer.computeDerivative(errorVector, np.eye(outputLayer.nOut))
         outputLayer.updateWeights(learningRate)
 
         nextDerivatives = outputLayer.deltas
